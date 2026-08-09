@@ -1,0 +1,775 @@
+/* ============================================================
+   Porte — Tasarım Sistemi
+   Palet: Kağıt kremi + mürekkep lacivert + bakır vurgu
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Işık tema */
+  --color-bg: #FAF6EE;
+  --color-bg-elevated: #FFFFFF;
+  --color-ink: #232B3D;
+  --color-ink-soft: #5B6472;
+  --color-copper: #B8763E;
+  --color-copper-dark: #96602F;
+  --color-success: #3F7A56;
+  --color-success-bg: #E4F0E7;
+  --color-error: #B4483B;
+  --color-error-bg: #F5E4E1;
+  --color-line: #DDD3C0;
+  --color-staff-line: #3A3226;
+
+  --font-display: 'Source Serif 4', Georgia, serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+
+  --shadow-card: 0 2px 8px rgba(35, 43, 61, 0.06), 0 1px 2px rgba(35, 43, 61, 0.04);
+  --shadow-elevated: 0 8px 24px rgba(35, 43, 61, 0.12);
+}
+
+[data-theme="dark"] {
+  --color-bg: #1B1B22;
+  --color-bg-elevated: #26262F;
+  --color-ink: #F2EFE9;
+  --color-ink-soft: #A9A7B5;
+  --color-copper: #D89760;
+  --color-copper-dark: #C27F45;
+  --color-success: #6FBF8E;
+  --color-success-bg: #1F3329;
+  --color-error: #E17E70;
+  --color-error-bg: #3A2422;
+  --color-line: #3A3A46;
+  --color-staff-line: #E8E4DA;
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-elevated: 0 8px 28px rgba(0, 0, 0, 0.45);
+}
+
+* {
+  box-sizing: border-box;
+  /* Mobil tarayıcılarda dokunuşta çıkan mavi/gri vurgu kutusunu tüm uygulama
+     genelinde kaldırır (iOS/Android varsayılan tap-highlight rengi) */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.25s ease, color 0.25s ease;
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* iOS Safari'de adres çubuğu/ana ekran çentiği ile içerik çakışmasını önler */
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  /* Çentik/Dynamic Island ve durum çubuğu ile içerik çakışmasını önler.
+     env() desteklenmeyen veya 0 döndüren tarayıcılarda (bazı Android
+     WebView'ları vb.) dahi en az bir durum çubuğu yüksekliği kadar
+     boşluk garanti edilir. */
+  padding-top: max(env(safe-area-inset-top, 0px), 20px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  /* Butonlarda dokunuşta beliren mavi/gri vurgu kutusunu ve metin
+     seçimini engeller */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+a,
+[role="button"],
+.level-card,
+.mode-card,
+.answer-btn,
+.play-note-btn,
+.btn-icon,
+.stat-pill {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  margin: 0;
+  color: var(--color-ink);
+}
+
+p { margin: 0; }
+
+:focus-visible {
+  outline: 2px solid var(--color-copper);
+  outline-offset: 2px;
+}
+
+/* ---------------- Vektörel İkonlar ---------------- */
+
+.icon {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.icon.inline-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 2px;
+  vertical-align: -2px;
+}
+
+.btn-text-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: -3px;
+  margin-right: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ---------------- Genel Ekran Yapısı ---------------- */
+
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 20px 40px;
+  animation: screen-fade-in 0.3s ease;
+}
+
+/* Ana ekran dışındaki tüm ekranlarda üst boşluğu artırarak
+   içeriğin durum çubuğu / çentik ile çakışmasını önle.
+   #app zaten en az 20px güvenli alan bıraktığı için burada da
+   sabit bir minimum eklenerek "Dersler" gibi başlıkların durum
+   çubuğundaki saat/sinyal simgeleriyle çakışması engellenir. */
+.screen:not(.home-screen) {
+  padding-top: max(28px, env(safe-area-inset-top, 0px));
+}
+
+@keyframes screen-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.screen-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.screen-header h2 {
+  font-size: 1.3rem;
+  flex: 1;
+}
+
+.btn-icon {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-line);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ink);
+  box-shadow: var(--shadow-card);
+}
+
+.btn-icon .icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* ---------------- Butonlar ---------------- */
+
+.btn {
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 14px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--color-copper);
+  color: #FFF9F2;
+  box-shadow: var(--shadow-card);
+}
+
+.btn-primary:hover { background: var(--color-copper-dark); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-ink);
+  border: 1.5px solid var(--color-line);
+}
+
+.btn-large {
+  width: 100%;
+  padding: 18px;
+  font-size: 1.05rem;
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  color: var(--color-ink-soft);
+  font-size: 0.9rem;
+  padding: 8px;
+}
+
+/* ---------------- Ana Ekran (Home) ---------------- */
+
+.home-screen {
+  justify-content: space-between;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.hero {
+  text-align: center;
+  padding-top: max(12vh, 48px);
+}
+
+.hero-staff-decoration {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 8px;
+  opacity: 0.9;
+}
+
+.hero-svg { width: 100%; height: 100%; }
+
+.app-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.app-subtitle {
+  color: var(--color-ink-soft);
+  margin-top: 8px;
+  font-size: 1rem;
+}
+
+.stats-strip {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin: 32px 0;
+}
+
+.stat-pill {
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 110px;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-copper);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--color-ink-soft);
+  margin-top: 2px;
+  text-align: center;
+}
+
+.home-links {
+  text-align: center;
+  margin-top: 16px;
+}
+
+/* ---------------- Ders Seçimi ---------------- */
+
+.level-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.level-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: left;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.15s ease;
+}
+
+.level-card:not(.locked):active { transform: scale(0.98); }
+
+.level-card.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.level-card.completed {
+  border-color: var(--color-success);
+}
+
+.level-card-number {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-copper);
+  min-width: 32px;
+}
+
+.level-card-body { flex: 1; }
+
+.level-card-body h3 {
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.level-card-body p {
+  font-size: 0.85rem;
+  color: var(--color-ink-soft);
+  line-height: 1.4;
+}
+
+.level-card-score {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.level-card-status {
+  color: var(--color-ink-soft);
+  display: flex;
+  align-items: center;
+}
+
+.level-card-status .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.level-card.completed .level-card-status { color: var(--color-success); }
+
+/* ---------------- Mod Seçimi ---------------- */
+
+.mode-options {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mode-card {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+
+.mode-card:active { transform: scale(0.98); }
+
+.mode-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+  color: var(--color-copper);
+}
+
+.mode-icon .icon {
+  width: 36px;
+  height: 36px;
+}
+
+.mode-card h3 {
+  font-size: 1.15rem;
+  margin-bottom: 6px;
+}
+
+.mode-card p {
+  color: var(--color-ink-soft);
+  font-size: 0.9rem;
+}
+
+.timed-toggle-wrap {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.timed-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--color-ink-soft);
+}
+
+.timed-toggle input { width: 18px; height: 18px; accent-color: var(--color-copper); }
+
+/* ---------------- Quiz Ekranı ---------------- */
+
+.quiz-header {
+  justify-content: space-between;
+}
+
+.quiz-progress-info {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.quiz-score {
+  display: inline-flex;
+  align-items: center;
+}
+
+.quiz-score-correct { color: var(--color-success); }
+.quiz-score-wrong { color: var(--color-error); }
+
+.quiz-streak {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-copper);
+}
+
+.timer-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--color-copper);
+  min-width: 40px;
+  text-align: right;
+}
+
+.quiz-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+.staff-display {
+  width: 100%;
+  max-width: 340px;
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-lg);
+  padding: 20px 10px;
+  box-shadow: var(--shadow-card);
+}
+
+.staff-line { stroke: var(--color-staff-line); stroke-width: 1.5; }
+.ledger-line { stroke: var(--color-staff-line); stroke-width: 1.5; }
+.note-head { fill: var(--color-ink); }
+.note-stem { stroke: var(--color-ink); stroke-width: 2; }
+.clef-symbol { font-size: 52px; fill: var(--color-ink); font-family: serif; }
+
+.ear-display {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 40px 20px;
+}
+
+.play-note-btn {
+  background: var(--color-copper);
+  color: #FFF9F2;
+  border: none;
+  border-radius: 50%;
+  width: 110px;
+  height: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-elevated);
+  transition: transform 0.15s ease;
+}
+
+.play-note-btn:active { transform: scale(0.95); }
+
+.play-icon { display: flex; }
+.play-icon .icon { width: 32px; height: 32px; }
+
+.ear-hint {
+  text-align: center;
+  color: var(--color-ink-soft);
+  font-size: 0.85rem;
+  max-width: 260px;
+}
+
+.answer-feedback {
+  min-height: 24px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.feedback-correct { color: var(--color-success); }
+.feedback-wrong { color: var(--color-error); }
+
+.answer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.answer-btn {
+  background: var(--color-bg-elevated);
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  padding: 12px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  transition: all 0.15s ease;
+}
+
+.answer-btn:active:not(:disabled) { transform: scale(0.95); }
+
+.answer-btn:disabled { cursor: default; }
+
+.answer-tr {
+  font-size: 0.8rem;
+  color: var(--color-ink-soft);
+}
+
+.answer-en {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.answer-btn.correct {
+  background: var(--color-success-bg);
+  border-color: var(--color-success);
+}
+
+.answer-btn.correct .answer-en { color: var(--color-success); }
+
+.answer-btn.wrong {
+  background: var(--color-error-bg);
+  border-color: var(--color-error);
+}
+
+.answer-btn.wrong .answer-en { color: var(--color-error); }
+
+/* ---------------- Sonuç Ekranı ---------------- */
+
+.results-screen {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+}
+
+.results-badge {
+  margin-bottom: 8px;
+  color: var(--color-copper);
+}
+
+.results-badge .icon {
+  width: 64px;
+  height: 64px;
+}
+
+.results-badge.passed { color: var(--color-success); }
+
+.results-summary {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.results-streak {
+  color: var(--color-ink-soft);
+  margin-top: 4px;
+  font-size: 0.9rem;
+}
+
+.results-note {
+  color: var(--color-ink-soft);
+  font-size: 0.85rem;
+  margin-top: 12px;
+  max-width: 280px;
+}
+
+.results-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 280px;
+  margin-top: 28px;
+}
+
+/* ---------------- Uygulama İçi Modal (confirm yerine) ---------------- */
+
+.app-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 16, 10, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+[data-theme="dark"] .app-modal-backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.app-modal-backdrop.open {
+  opacity: 1;
+}
+
+.app-modal {
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  max-width: 340px;
+  width: 100%;
+  box-shadow: var(--shadow-elevated);
+  transform: scale(0.94) translateY(8px);
+  transition: transform 0.2s ease;
+}
+
+.app-modal-backdrop.open .app-modal {
+  transform: scale(1) translateY(0);
+}
+
+.app-modal-title {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.app-modal-message {
+  color: var(--color-ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.app-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.app-modal-actions .btn {
+  flex: 1;
+  padding: 12px;
+  font-size: 0.92rem;
+}
+
+/* ---------------- Uygulama İçi Toast (alert yerine) ---------------- */
+
+.app-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+  transform: translate(-50%, 12px);
+  background: var(--color-ink);
+  color: var(--color-bg);
+  padding: 13px 20px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-elevated);
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 300;
+  max-width: calc(100% - 48px);
+}
+
+[data-theme="dark"] .app-toast {
+  background: var(--color-bg-elevated);
+  color: var(--color-ink);
+  border: 1px solid var(--color-line);
+}
+
+.app-toast.open {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.app-toast-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.app-toast-success .app-toast-icon { color: var(--color-success); }
+.app-toast-error .app-toast-icon { color: var(--color-error); }
+.app-toast-info .app-toast-icon { color: var(--color-copper); }
+
+/* ---------------- Responsive ---------------- */
+
+@media (min-width: 500px) {
+  .answer-grid { grid-template-columns: repeat(7, 1fr); }
+}
