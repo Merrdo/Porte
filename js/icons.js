@@ -39,9 +39,6 @@ const ICONS = {
 
   // Yükselen enerji/çaba (sonuç ekranı - kaçırdı)
   spark: `<svg viewBox="0 0 24 24" fill="none"><path d="M13 2L4 14H11L10 22L20 9H13L13 2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>`,
-
-  // Dişli / ayarlar
-  settings: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 15.2C13.8 15.2 15.2 13.8 15.2 12C15.2 10.2 13.8 8.8 12 8.8C10.2 8.8 8.8 10.2 8.8 12C8.8 13.8 10.2 15.2 12 15.2Z" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 13.6C19.47 13.07 19.5 12.54 19.5 12C19.5 11.46 19.47 10.93 19.4 10.4L21.5 8.8L19.9 6.05L17.42 6.95C16.6 6.25 15.65 5.7 14.62 5.35L14.2 2.75H9.8L9.38 5.35C8.35 5.7 7.4 6.25 6.58 6.95L4.1 6.05L2.5 8.8L4.6 10.4C4.53 10.93 4.5 11.46 4.5 12C4.5 12.54 4.53 13.07 4.6 13.6L2.5 15.2L4.1 17.95L6.58 17.05C7.4 17.75 8.35 18.3 9.38 18.65L9.8 21.25H14.2L14.62 18.65C15.65 18.3 16.6 17.75 17.42 17.05L19.9 17.95L21.5 15.2L19.4 13.6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`,
 };
 
 /**

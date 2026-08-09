@@ -64,11 +64,9 @@ html, body {
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   transition: background 0.25s ease, color 0.25s ease;
-  height: 100%;
-  /* Sayfanın kendisi artık kaymıyor; kaydırma yalnızca ekran içindeki
-     .screen-scroll bölgelerinde gerçekleşir. Bu sayede başlıklar durum
-     çubuğunun altına kayıp saatle/simgelerle çakışmaz. */
-  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* iOS Safari'de adres çubuğu/ana ekran çentiği ile içerik çakışmasını önler */
   overscroll-behavior-y: none;
   -webkit-tap-highlight-color: transparent;
 }
@@ -76,9 +74,8 @@ html, body {
 #app {
   max-width: 480px;
   margin: 0 auto;
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -164,26 +161,10 @@ p { margin: 0; }
 
 .screen {
   flex: 1;
-  min-height: 0;
   display: flex;
   flex-direction: column;
   padding: 20px 20px 40px;
-  overflow: hidden;
   animation: screen-fade-in 0.3s ease;
-}
-
-/* İçeriği başlığın altında bağımsız olarak kaydıran bölge. Başlık
-   (.screen-header) bu bölgenin dışında kaldığı için asla kaymaz ve
-   durum çubuğuyla/saatle çakışmaz. */
-.screen-scroll {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-y: contain;
-  /* Kaydırma çubuğunun kart gölgelerini kesmemesi için küçük bir pay */
-  margin: 0 -4px;
-  padding: 0 4px;
 }
 
 /* Ana ekran dışındaki tüm ekranlarda üst boşluğu artırarak
@@ -275,16 +256,9 @@ p { margin: 0; }
 /* ---------------- Ana Ekran (Home) ---------------- */
 
 .home-screen {
-  position: relative;
   justify-content: space-between;
-  overflow: hidden;
-}
-
-.home-settings-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 5;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .hero {
@@ -348,70 +322,6 @@ p { margin: 0; }
 .home-links {
   text-align: center;
   margin-top: 16px;
-}
-
-/* ---------------- Ayarlar ---------------- */
-
-.settings-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.settings-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  text-align: left;
-  box-shadow: var(--shadow-card);
-  transition: transform 0.15s ease;
-}
-
-.settings-item:active { transform: scale(0.98); }
-
-.settings-item-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-copper);
-}
-
-.settings-item-icon .icon {
-  width: 22px;
-  height: 22px;
-}
-
-.settings-item-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.settings-item-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
-.settings-item-value {
-  font-size: 0.82rem;
-  color: var(--color-ink-soft);
-}
-
-.settings-item-chevron {
-  color: var(--color-ink-soft);
-  display: flex;
-  align-items: center;
-}
-
-.settings-item-chevron .icon {
-  width: 18px;
-  height: 18px;
 }
 
 /* ---------------- Ders Seçimi ---------------- */
@@ -583,15 +493,11 @@ p { margin: 0; }
 
 .quiz-body {
   flex: 1;
-  min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   gap: 20px;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-y: contain;
 }
 
 .staff-display {
