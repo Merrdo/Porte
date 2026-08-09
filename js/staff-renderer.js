@@ -32,7 +32,7 @@ function clefSymbolPath(clefId) {
  * @param {SVGElement} container - İçine çizilecek <svg> elementi
  * @param {Object} opts - { staffPosition, clefId, showNote }
  */
-function renderStaff(svgEl, { staffPosition = null, clefId = 'treble', showNote = true } = {}) {
+function renderStaff(svgEl, { staffPosition = null, clefId = 'treble', showNote = true, clefScale = 1 } = {}) {
   svgEl.innerHTML = '';
   svgEl.setAttribute('viewBox', '0 0 320 200');
   svgEl.setAttribute('width', '100%');
@@ -51,10 +51,13 @@ function renderStaff(svgEl, { staffPosition = null, clefId = 'treble', showNote 
   }
 
   // Clef sembolü
+  const clefBaseSize = 52;
+  const clefX = STAFF_LEFT_PAD - 45 - (clefScale - 1) * 16;
   const clefText = el('text', {
-    x: STAFF_LEFT_PAD - 45,
+    x: clefX,
     y: clefId === 'bass' ? baseY - LINE_GAP * 3 : baseY + 6,
     class: `clef-symbol clef-${clefId}`,
+    style: clefScale !== 1 ? `font-size:${clefBaseSize * clefScale}px` : '',
   });
   clefText.textContent = clefSymbolPath(clefId);
   g.appendChild(clefText);

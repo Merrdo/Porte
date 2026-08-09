@@ -71,6 +71,13 @@ html, body {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Giriş (ana) ekranındayken sayfanın kaymasını tamamen engelle */
+html.home-active,
+body.home-active {
+  overflow: hidden;
+  height: 100dvh;
+}
+
 #app {
   max-width: 480px;
   margin: 0 auto;
@@ -257,13 +264,12 @@ p { margin: 0; }
 
 .home-screen {
   justify-content: space-between;
-  min-height: 100vh;
-  min-height: 100dvh;
+  min-height: 100%;
 }
 
 .hero {
   text-align: center;
-  padding-top: max(12vh, 48px);
+  padding-top: clamp(24px, 8vh, 56px);
 }
 
 .hero-staff-decoration {
@@ -291,7 +297,7 @@ p { margin: 0; }
   display: flex;
   gap: 12px;
   justify-content: center;
-  margin: 32px 0;
+  margin: clamp(16px, 4vh, 32px) 0;
 }
 
 .stat-pill {
@@ -319,9 +325,16 @@ p { margin: 0; }
   text-align: center;
 }
 
-.home-links {
-  text-align: center;
-  margin-top: 16px;
+.home-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding-bottom: clamp(12px, 3vh, 24px);
+}
+
+.home-actions .btn-text {
+  align-self: center;
 }
 
 /* ---------------- Ders Seçimi ---------------- */

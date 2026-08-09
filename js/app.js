@@ -34,6 +34,8 @@ const app = document.getElementById('app');
 // ---------------- Ekran Yönetimi ----------------
 
 function renderApp() {
+  document.documentElement.classList.toggle('home-active', state.screen === 'home');
+  document.body.classList.toggle('home-active', state.screen === 'home');
   switch (state.screen) {
     case 'home': renderHomeScreen(); break;
     case 'level-select': renderLevelSelectScreen(); break;
@@ -67,10 +69,9 @@ function renderHomeScreen() {
         </div>
       </div>
 
-      <button class="btn btn-primary btn-large" id="startBtn">Derslere Başla</button>
-
-      <div class="home-links">
+      <div class="home-actions">
         <button class="btn-text" id="themeToggle">${icon('theme', 'btn-text-icon')} Tema Değiştir</button>
+        <button class="btn btn-primary btn-large" id="startBtn">Derslere Başla</button>
       </div>
     </div>
   `;
@@ -79,7 +80,7 @@ function renderHomeScreen() {
   const heroSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   heroSvg.setAttribute('class', 'hero-svg');
   document.getElementById('heroStaffDecoration').appendChild(heroSvg);
-  renderStaff(heroSvg, { staffPosition: 4, clefId: 'treble', showNote: true });
+  renderStaff(heroSvg, { staffPosition: 4, clefId: 'treble', showNote: true, clefScale: 1.6 });
 
   document.getElementById('startBtn').addEventListener('click', () => {
     state.screen = 'level-select';
