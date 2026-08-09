@@ -40,6 +40,7 @@ function renderApp() {
     case 'mode-select': renderModeSelectScreen(); break;
     case 'quiz': renderQuizScreen(); break;
     case 'results': renderResultsScreen(); break;
+    case 'settings': renderSettingsScreen(); break;
     default: renderHomeScreen();
   }
 }
@@ -50,6 +51,8 @@ function renderHomeScreen() {
 
   app.innerHTML = `
     <div class="screen home-screen">
+      <button class="btn-icon home-settings-btn" id="settingsBtn" aria-label="Ayarlar">${icon('settings')}</button>
+
       <header class="hero">
         <div class="hero-staff-decoration" id="heroStaffDecoration"></div>
         <h1 class="app-title">Porte</h1>
@@ -68,10 +71,6 @@ function renderHomeScreen() {
       </div>
 
       <button class="btn btn-primary btn-large" id="startBtn">Derslere Başla</button>
-
-      <div class="home-links">
-        <button class="btn-text" id="themeToggle">${icon('theme', 'btn-text-icon')} Tema Değiştir</button>
-      </div>
     </div>
   `;
 
@@ -85,7 +84,45 @@ function renderHomeScreen() {
     state.screen = 'level-select';
     renderApp();
   });
-  document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+  document.getElementById('settingsBtn').addEventListener('click', () => {
+    state.screen = 'settings';
+    renderApp();
+  });
+}
+
+function renderSettingsScreen() {
+  const progress = loadProgress();
+  const isDark = (progress.theme || 'light') === 'dark';
+
+  app.innerHTML = `
+    <div class="screen settings-screen">
+      <header class="screen-header">
+        <button class="btn-icon" id="backBtn" aria-label="Geri">${icon('back')}</button>
+        <h2>Ayarlar</h2>
+      </header>
+      <div class="screen-scroll">
+        <div class="settings-list">
+          <button class="settings-item" id="themeToggleItem">
+            <span class="settings-item-icon">${icon('theme')}</span>
+            <span class="settings-item-body">
+              <span class="settings-item-title">Tema</span>
+              <span class="settings-item-value">${isDark ? 'Koyu' : 'Açık'}</span>
+            </span>
+            <span class="settings-item-chevron">${icon('arrowRight')}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('backBtn').addEventListener('click', () => {
+    state.screen = 'home';
+    renderApp();
+  });
+  document.getElementById('themeToggleItem').addEventListener('click', () => {
+    toggleTheme();
+    renderSettingsScreen();
+  });
 }
 
 function renderLevelSelectScreen() {
@@ -118,8 +155,10 @@ function renderLevelSelectScreen() {
         <button class="btn-icon" id="backBtn" aria-label="Geri">${icon('back')}</button>
         <h2>Dersler</h2>
       </header>
-      <div class="level-list">
-        ${levelCards}
+      <div class="screen-scroll">
+        <div class="level-list">
+          ${levelCards}
+        </div>
       </div>
     </div>
   `;
@@ -149,24 +188,26 @@ function renderModeSelectScreen() {
         <h2>${level.title}</h2>
       </header>
 
-      <div class="mode-options">
-        <button class="mode-card" id="visualModeBtn">
-          <span class="mode-icon">${icon('eye')}</span>
-          <h3>Görsel Tanıma</h3>
-          <p>Portede gösterilen notanın adını bul</p>
-        </button>
-        <button class="mode-card" id="earModeBtn">
-          <span class="mode-icon">${icon('ear')}</span>
-          <h3>Kulakla Tanıma</h3>
-          <p>Çalınan sesi dinle, notayı tahmin et</p>
-        </button>
-      </div>
+      <div class="screen-scroll">
+        <div class="mode-options">
+          <button class="mode-card" id="visualModeBtn">
+            <span class="mode-icon">${icon('eye')}</span>
+            <h3>Görsel Tanıma</h3>
+            <p>Portede gösterilen notanın adını bul</p>
+          </button>
+          <button class="mode-card" id="earModeBtn">
+            <span class="mode-icon">${icon('ear')}</span>
+            <h3>Kulakla Tanıma</h3>
+            <p>Çalınan sesi dinle, notayı tahmin et</p>
+          </button>
+        </div>
 
-      <div class="timed-toggle-wrap">
-        <label class="timed-toggle">
-          <input type="checkbox" id="timedToggle" />
-          <span>Süreye karşı çalış (60 sn)</span>
-        </label>
+        <div class="timed-toggle-wrap">
+          <label class="timed-toggle">
+            <input type="checkbox" id="timedToggle" />
+            <span>Süreye karşı çalış (60 sn)</span>
+          </label>
+        </div>
       </div>
     </div>
   `;
