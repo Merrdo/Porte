@@ -2,7 +2,7 @@
 // Service Worker - Offline Destek
 // ============================================================
 
-const CACHE_NAME = 'porte-v3';
+const CACHE_NAME = 'porte-v4';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
